@@ -2,9 +2,9 @@ import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.DragAndDropOptions.to;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -41,9 +41,25 @@ public class MouseOperationsTest {
 
     //Task2
     //(опциональное) Запрограммируйте Drag&Drop с помощью Selenide.actions()
-    //- Откройте https://the-internet.herokuapp.com/drag_and_drop
-    //- Перенесите прямоугольник А на место В
-    //- Проверьте, что прямоугольники действительно поменялись
-    //- В Selenide есть команда $(element).dragAndDrop($(to-element)),
-    // проверьте работает ли тест, если использовать её вместо actions()
+    @Test
+    void testDragAndDrop () {
+        //- Откройте https://the-internet.herokuapp.com/drag_and_drop
+        open("https://the-internet.herokuapp.com/drag_and_drop");
+
+        //- Перенесите прямоугольник А на место В
+        actions().moveToElement($("#column-a header")).clickAndHold()
+                .moveByOffset(150, 0).release().perform();
+
+        //- Проверьте, что прямоугольники действительно поменялись
+        $("#column-a header").shouldHave(text("B"));
+        $("#column-b header").shouldHave(text("A"));
+
+        //- В Selenide есть команда $(element).dragAndDrop($(to-element)),
+        // проверьте работает ли тест, если использовать её вместо actions()
+        $("#column-a header").dragAndDrop(to($("#column-b header")));
+
+        //- Проверьте, что прямоугольники действительно поменялись
+        $("#column-a header").shouldHave(text("A"));
+        $("#column-b header").shouldHave(text("B"));
+    }
 }
